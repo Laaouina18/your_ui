@@ -1,34 +1,38 @@
-import React, { useState, createContext } from "react";
+import React, { useState } from "react";
 import { Link, Outlet } from "react-router-dom";
+import { getCategories } from "../api/api";
 
-// const CategoryContext = createContext();
+ const Categories = () => {
+  const [activeButton, setActiveButton] = useState(null);
+  const data = getCategories();
 
-const Categories = () => {
-//   const [activeButton, setActiveButton] = useState(null);
-//   const [data, setData] = useState({});
-
-//   const handleButtonClick = (category) => {
-//     setActiveButton(category.id);
-//     setData(category);
-//   };
+  const changer = (category) => {
+    setActiveButton(category.id);
+  };
 
   return (
     <div>
-      <h1>Session Categories</h1>
-      <section className="FlexContainer">
-      
-          <Link
-    
-            className="link active-button"
-          >
-            category.name
-          </Link>
-     
-      </section>
-
-   
+      <div>
+        <h1>Session Categories</h1>
+        <section className="FlexContainer">
+          {data ? (
+            data.map((category) => (
+              <Link
+                key={category.id}
+                className={category.id === activeButton ? "link active-button" : "link"}
+                onClick={() => changer(category)}
+                to={{ pathname: `/categories/${category.id}` }}
+              >
+                {category.name}
+              </Link>
+            ))
+          ) : (
+            <p>Loading or no data available...</p>
+          )}
+        </section>
+        <Outlet />
+      </div>
     </div>
   );
 };
-
 export default Categories;

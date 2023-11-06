@@ -1,35 +1,43 @@
 import React from 'react';
+import { NavLink, Outlet, useParams } from 'react-router-dom';
+import { getCategory } from '../api/api';
 
-// import CategoryContext  from "../pages/categories";
- const CategoriesSession = () => {
+const CategoriesSession = () => {
+  const { sessions } = useParams();
+  const dataApi = getCategory(sessions);
 
+  const styleNav = ({ active }) => {
+    return {
+      border: active ? '2px solid #5F9EA0' : '2px solid black',
+      color: active ? '#5F9EA0' : 'gray',
+    };
+  };
 
   return (
-<div>  <h2>title</h2>
-      
-        <div className="div-as-button">
-          <div className="button-session">
-            <p className="bold-size">data.name</p>
-            <p>data.id</p>
+    <div>
+      {dataApi ? (
+     <div>
+          <h2>{dataApi.name}</h2>
+          <div className="div-as-button">
+            {dataApi.sessions.map((session) => (
+              <NavLink
+                to={session.id}
+                style={styleNav}
+                className='button-session'
+                key={session.id}
+              >
+                <p className="bold-size">{session.name}</p>
+                <p>{session.id}</p>
+              </NavLink>
+            ))}
           </div>
-          <div className="button-session">
-            <p className="bold-size">data.name</p>
-            <p>data.id</p>
-          </div>
-        </div>
-      
-        <div className="loader">
-          <div className="wrapper">
-            <div className="line-1"></div>
-            <div className="line-2"></div>
-            <div className="line-3"></div>
-            <div className="line-4"></div>
-          </div>
-      </div>
+		  </div>
     
-     </div>
-    
-
+      ) : (
+        <p>...</p>
+      )}
+      <Outlet />
+    </div>
   );
 };
-export default CategoriesSession;
+export  default CategoriesSession;
